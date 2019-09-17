@@ -51,12 +51,32 @@ The first endpoint we'll look at on OpenNotify is the` iss-now.json` endpoint (c
 
 ```python
 # You Code Here
+import requests
+r = requests.get('http://api.open-notify.org/iss-now.json')
+r.status_code == requests.codes.ok
 ```
+
+
+
+
+    True
+
+
 
 
 ```python
 # Your comments 
+r.text
 ```
+
+
+
+
+    '{"message": "success", "iss_position": {"longitude": "116.2795", "latitude": "-38.7472"}, "timestamp": 1568681574}'
+
+
+
+It's currently off the coast of Australia. (Kinda of far out to say "off the coast" but it's the closest landmark)
 
 * Print the contents of the response and identify its current location
 
@@ -77,12 +97,29 @@ Let's repeat the above for the second endpoint `iss-pass.json`. This end point i
 
 ```python
 # You Code Here
+r_pass = requests.get('http://api.open-notify.org/iss-pass.json')
+r_pass.status_code == requests.codes.ok
 ```
+
+
+
+
+    False
+
+
 
 
 ```python
 # Your comments 
+r_pass.status_code
 ```
+
+
+
+
+    400
+
+
 
 So clearly there is something wrong as we had a 400 response. This is how you should always test your responses for validity. 
 
@@ -104,12 +141,73 @@ Perform the following tasks :
 
 ```python
 # You Code Here
+parameters = {"lat": 40.71, "lon": -74}
+r_pass = requests.get('http://api.open-notify.org/iss-pass.json',params=parameters)
+r_pass.status_code == requests.codes.ok
 ```
+
+
+
+
+    True
+
+
 
 
 ```python
 # Check the API and interpret your results - when will ISS pass over NEW York next ?
+r_pass.headers
 ```
+
+
+
+
+    {'Server': 'nginx/1.10.3', 'Date': 'Tue, 17 Sep 2019 00:58:11 GMT', 'Content-Type': 'application/json', 'Content-Length': '519', 'Connection': 'keep-alive', 'Via': '1.1 vegur'}
+
+
+
+when will ISS pass over NEW York next ? Unix timestamp 1568684071
+GMT: Tuesday, September 17, 2019 1:34:31 AM
+
+
+```python
+print(r_pass.text)
+```
+
+    {
+      "message": "success", 
+      "request": {
+        "altitude": 100, 
+        "datetime": 1568681891, 
+        "latitude": 40.71, 
+        "longitude": -74.0, 
+        "passes": 5
+      }, 
+      "response": [
+        {
+          "duration": 647, 
+          "risetime": 1568684071
+        }, 
+        {
+          "duration": 601, 
+          "risetime": 1568689917
+        }, 
+        {
+          "duration": 553, 
+          "risetime": 1568695803
+        }, 
+        {
+          "duration": 607, 
+          "risetime": 1568701637
+        }, 
+        {
+          "duration": 648, 
+          "risetime": 1568707438
+        }
+      ]
+    }
+    
+
 
 ### Finding the number of people in space
 
@@ -124,12 +222,49 @@ Read the above documentation and perform following tasks:
 
 ```python
 # You Code Here
+r_astros = requests.get('http://api.open-notify.org//astros.json')
+r_astros.status_code == requests.codes.ok
 ```
+
+
+
+
+    True
+
+
 
 
 ```python
 # Interpret the Results - How many people are in space and what are their names 
+r_astros.headers
 ```
+
+
+
+
+    {'Server': 'nginx/1.10.3', 'Date': 'Tue, 17 Sep 2019 01:00:44 GMT', 'Content-Type': 'application/json', 'Content-Length': '312', 'Connection': 'keep-alive', 'access-control-allow-origin': '*'}
+
+
+
+
+```python
+print(r_astros.json())
+```
+
+    {'message': 'success', 'people': [{'name': 'Alexey Ovchinin', 'craft': 'ISS'}, {'name': 'Nick Hague', 'craft': 'ISS'}, {'name': 'Christina Koch', 'craft': 'ISS'}, {'name': 'Alexander Skvortsov', 'craft': 'ISS'}, {'name': 'Luca Parmitano', 'craft': 'ISS'}, {'name': 'Andrew Morgan', 'craft': 'ISS'}], 'number': 6}
+
+
+
+```python
+len(r_astros.json()['people'])
+```
+
+
+
+
+    6
+
+
 
 ## Summary 
 
